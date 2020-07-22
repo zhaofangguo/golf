@@ -15,12 +15,7 @@ PORT = 9559
 
 
 def getImag(IP, PORT, cameraID, name):
-
     camProxy = ALProxy("ALVideoDevice", IP, PORT)
-    motionProxy = ALProxy("ALMotion", IP, PORT)
-    postureProxy = ALProxy('ALRobotPosture', IP, PORT)
-    # motionProxy.wakeUp()
-    # postureProxy.goToPosture('StandInit', 0.5)
     resolution = vision_definitions.kQVGA
     colorSpace = vision_definitions.kBGRColorSpace
     fps = 20
@@ -35,10 +30,15 @@ def getImag(IP, PORT, cameraID, name):
     imagHeader = np.reshape(imagHeader, [240, 320, 3])
     img = np.uint8(imagHeader)
     cv2.imshow(name, img)
-    # cv2.waitKey(0)
     return img
 
 
 if __name__ == "__main__":
-    getImag(IP, PORT, 1, 'uiogygiyg')
-    # getImag(IP, PORT, 1, 'shaglskalkg')
+    robotIP = '169.254.202.17'
+    PORT = 9559
+    motionProxy = ALProxy("ALMotion", robotIP, PORT)
+    postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
+    motionProxy.wakeUp()
+    postureProxy.goToPosture("StandInit", 0.5)
+    getImag(robotIP, 9559, 0, 'ajgeljaljif')
+    cv2.waitKey(0)

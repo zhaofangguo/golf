@@ -2,18 +2,23 @@
 import cv2 as cv
 import numpy as np
 from getImag import getImag
+from naoqi import ALProxy
 
 
 # 本py为图像处理部分,golf项目应该返回球的圆心坐标
-def ImagProgress(filename):
+def ImagProgress(filename, flag):
     Image = filename
     # Image = cv.imread(filename)
     cv.namedWindow('test', cv.WINDOW_NORMAL)
     Image_Gau = cv.GaussianBlur(Image, (9, 9), 0)
     Image_HSV = cv.cvtColor(Image_Gau, cv.COLOR_BGR2HSV)
     # red limitition
-    lowarray = np.array([0, 43, 46])
-    higharray = np.array([20, 255, 255])
+    if flag == 'ball':
+        lowarray = np.array([0, 43, 46])
+        higharray = np.array([20, 255, 255])
+    else:
+        lowarray = np.array([0, 43, 46])
+        higharray = np.array([77, 255, 255])
     # lowarraydark = np.array([0, 43, 46])
     # higharraydark = np.array([10, 255, 255])
     dst = cv.inRange(Image_HSV, lowarray, higharray)
@@ -30,6 +35,8 @@ def ImagProgress(filename):
     # cv.imshow('add', dark)
     circles = cv.HoughCircles(MedirImag, cv.HOUGH_GRADIENT, 1, 100, param1=1, param2=5, minRadius=1, maxRadius=1000)
     print circles
+    if circles is None and flag == 'hole':
+        return None
     cv.imshow('eter', MedirImag)
     for circle in circles[0]:
         # 圆的基本信息
@@ -46,12 +53,19 @@ def ImagProgress(filename):
         img = cv.circle(Image, (x, y), 2, (255, 255, 255), -1)
     cv.imshow('test', img)
     print x, y
-    # cv.waitKey(0)
     data = [x, y]
     return data
 
 
 if __name__ == "__main__":
-    frame = getImag('169.254.202.17', 9559, 1, 'ahhjgkjgi')
-    ImagProgress(frame)
+    robotIP = '169.254.202.17'
+    PORT = 9559
+    motionProxy = ALProxy("ALMotion", robotIP, PORT)
+    postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
+    motionProxy.wakeUp()
+    postureProxy.goToPosture("StandInit", 0.5)
+    frame = getImag('169.254.202.17', 9559, 1, 'ahhhfddvsrdhjgkjgi')
+    ImagProgress(frame, 'ball')
+    ImagProgress(frame, 'hole')
+    cv.waitKey(0)
     # print ImagProgress(frame, 1)
