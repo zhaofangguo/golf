@@ -5,17 +5,16 @@ import math
 import numpy as np
 from naoqi import ALProxy
 import vision_definitions
-from ImagProgress import ImagProgress
 import time
 import argparse
 import motion
 import almath
 
-IP = '169.254.247.173'
+IP = '169.254.202.17'
 PORT = 9559
 
 
-def getImag(IP, PORT, cameraID):
+def getImag(IP, PORT, cameraID, name):
 
     camProxy = ALProxy("ALVideoDevice", IP, PORT)
     motionProxy = ALProxy("ALMotion", IP, PORT)
@@ -27,8 +26,6 @@ def getImag(IP, PORT, cameraID):
     fps = 20
     print "Is camera opened ?", camProxy.isCameraOpen(1)
     print "getting images in remote"
-    name = random.randint(1,1000)
-    name = str(name)
     nameID = camProxy.subscribe(name, resolution, colorSpace, fps)
     camProxy.setActiveCamera(cameraID)
     img = camProxy.getImageRemote(nameID)
@@ -37,8 +34,11 @@ def getImag(IP, PORT, cameraID):
     camProxy.releaseImage(nameID)
     imagHeader = np.reshape(imagHeader, [240, 320, 3])
     img = np.uint8(imagHeader)
+    cv2.imshow(name, img)
+    # cv2.waitKey(0)
     return img
 
 
 if __name__ == "__main__":
-    getImag(IP, PORT, 0, 'uiogygoiyg')
+    getImag(IP, PORT, 1, 'uiogygiyg')
+    # getImag(IP, PORT, 1, 'shaglskalkg')

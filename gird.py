@@ -19,7 +19,7 @@ def gird(IP, PORT):
     images = []
     for i in range(0, 11):
         name = str(random.randint(1, 1000))
-        images.append(getImag(IP, PORT, 0, name))
+        images.append(getImag(IP, PORT, 1, name))
         print 'continue'
         time.sleep(2)
     for frame in images:
@@ -43,13 +43,16 @@ def gird(IP, PORT):
 
             cv.drawChessboardCorners(img, (8, 6), corners, ret)  # 记住，OpenCV的绘制函数一般无返回值
             cv.imshow('img', img)
-            cv.waitKey(2000)
+            name = str(random.randint(1, 1000))
+            name = name + '.jpg'
+            cv.imwrite(name, img)
+            cv.waitKey(5000)
 
     print(len(img_points))
     cv.destroyAllWindows()
 
     # 标定
-    ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(obj_points, img_points, size, None, None)
+    ret, mtx, dist, rvecs, tvecs = cv.calibrateCamera(obj_points, img_points, size, None, None)
 
     print("ret:", ret)
     print("mtx:\n", mtx)  # 内参数矩阵
@@ -57,6 +60,7 @@ def gird(IP, PORT):
     print("rvecs:\n", rvecs)  # 旋转向量  # 外参数
     print("tvecs:\n", tvecs)  # 平移向量  # 外参数
     print("-----------------------------------------------------")
+    cv.waitKey(0)
 
 
 if __name__ == '__main__':
