@@ -1,3 +1,7 @@
+# coding=utf-8
+"""
+使用拍子打球的动作
+"""
 from naoqi import ALProxy
 
 

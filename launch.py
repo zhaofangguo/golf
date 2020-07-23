@@ -1,9 +1,13 @@
+# coding=utf-8
+"""
+最终launch文件，直接运行则可以完成整套动作
+"""
 from judgeallin import judgeallin
 from kick import kick
 from naoqi import ALProxy
 import cv2 as cv
 from getImag import getImag
-from ImagProgress import ImagProgress
+from ImagProgressHSV import ImagProgressHSV
 from turnHeadandGetDistance import turnHeadandGetDistance
 from findHole import findHole
 import random

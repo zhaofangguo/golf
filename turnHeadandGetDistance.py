@@ -1,4 +1,8 @@
-from ImagProgress import ImagProgress
+# coding=utf-8
+"""
+转头使目标位于视野中心并计算距离
+"""
+from ImagProgressHSV import ImagProgressHSV
 from distance import getangle
 from distance import getdistance
 from naoqi import ALProxy
@@ -10,18 +14,22 @@ import motion
 
 
 def turnHeadandGetDistance(robotIP, PORT=9559):
+    """获取代理"""
     motionProxy = ALProxy("ALMotion", robotIP, PORT)
     postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
+    # 获取初始头部角度
     rotation1 = motionProxy.getAngles('HeadYaw', True)
     rotation2 = motionProxy.getAngles('HeadPitch', True)
     print rotation1, rotation2
     name = random.randint(1, 1000)
     name = str(name)
     img = getImag(robotIP, PORT, 1, name)
-    anglelist = getangle(ImagProgress(img, 'ball'), rotation1, rotation2)
+    # 获取旋转所需角度
+    anglelist = getangle(ImagProgressHSV(img, 'ball'), rotation1, rotation2)
     alpha = float(anglelist[0])
     beta = float(anglelist[1])
     print alpha, beta
+    # 转动头部使目标位于视野中央
     motionProxy.setStiffnesses("Head", 1.0)
     names = "HeadYaw"
     angleLists = alpha
@@ -33,7 +41,7 @@ def turnHeadandGetDistance(robotIP, PORT=9559):
     angleLists = beta
     motionProxy.angleInterpolation(names, angleLists, timeLists, isAbsolute)
     print 'Pitch finish'
-
+    # 得到目前头部角度进行距离测算
     time.sleep(1.0)
     img = getImag(robotIP, PORT, 1, name)
     theta = motionProxy.getAngles('HeadPitch', True)

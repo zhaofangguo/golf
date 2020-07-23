@@ -1,11 +1,11 @@
 # coding=utf-8
+"""
+getangle函数得到机器人头部相对于中心点的偏转角度，alpha是竖直方向，beta是水平方向
+getdistance函数得到距离障碍物的距离
+"""
 from cmath import pi
 from cmath import tan
 import almath
-
-
-# getangle函数得到机器人头部相对于中心点的偏转角度，alpha是竖直方向，beta是水平方向
-# getdistance函数得到距离障碍物的距离
 
 
 def getangle(data, rotation1, rotation2):

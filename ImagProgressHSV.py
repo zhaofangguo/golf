@@ -1,18 +1,22 @@
 # coding=utf-8
+"""
+使用HSV方式处理图片，使用HSV阈值截断的方法进行判断，返回值为球的球心像素坐标
+洞的球心像素坐标
+"""
 import cv2 as cv
 import numpy as np
 from getImag import getImag
 from naoqi import ALProxy
 
 
-# 本py为图像处理部分,golf项目应该返回球的圆心坐标
-def ImagProgress(filename, flag):
+def ImagProgressHSV(filename, flag):
     Image = filename
     # Image = cv.imread(filename)
+    # 得到图片，搞高斯滤波+色彩转换
     cv.namedWindow('test', cv.WINDOW_NORMAL)
     Image_Gau = cv.GaussianBlur(Image, (9, 9), 0)
     Image_HSV = cv.cvtColor(Image_Gau, cv.COLOR_BGR2HSV)
-    # red limitition
+    # HSV阈值设定
     if flag == 'ball':
         lowarray = np.array([0, 43, 46])
         higharray = np.array([20, 255, 255])
@@ -21,8 +25,10 @@ def ImagProgress(filename, flag):
         higharray = np.array([77, 255, 255])
     # lowarraydark = np.array([0, 43, 46])
     # higharraydark = np.array([10, 255, 255])
+    # 　二值化
     dst = cv.inRange(Image_HSV, lowarray, higharray)
     # dstdark = cv.inRange(Image_HSV, lowarraydark, higharraydark)
+    # 中值滤波降噪，开运算降噪
     MedirImag = cv.medianBlur(dst, 9)
     element = cv.getStructuringElement(cv.MORPH_RECT, (13, 13))
     MedirImag = cv.morphologyEx(MedirImag, cv.MORPH_OPEN, element)
@@ -33,6 +39,7 @@ def ImagProgress(filename, flag):
     # cv.imshow('testdark', MedirImagdark)
     # dark = cv.addWeighted(MedirImagdark, 0.5, MedirImag, 0.5, 0)
     # cv.imshow('add', dark)
+    # 霍夫变换检测圆心
     circles = cv.HoughCircles(MedirImag, cv.HOUGH_GRADIENT, 1, 100, param1=1, param2=5, minRadius=1, maxRadius=1000)
     print circles
     if circles is None and flag == 'hole':
@@ -65,7 +72,7 @@ if __name__ == "__main__":
     motionProxy.wakeUp()
     postureProxy.goToPosture("StandInit", 0.5)
     frame = getImag('169.254.202.17', 9559, 1, 'ahhhfddvsrdhjgkjgi')
-    ImagProgress(frame, 'ball')
-    ImagProgress(frame, 'hole')
+    ImagProgressHSV(frame, 'ball')
+    ImagProgressHSV(frame, 'hole')
     cv.waitKey(0)
     # print ImagProgress(frame, 1)

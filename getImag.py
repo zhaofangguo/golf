@@ -1,5 +1,8 @@
+# coding=utf-8
+"""
+得到一张图片
+"""
 import random
-
 import cv2
 import math
 import numpy as np
@@ -29,7 +32,7 @@ def getImag(IP, PORT, cameraID, name):
     camProxy.releaseImage(nameID)
     imagHeader = np.reshape(imagHeader, [240, 320, 3])
     img = np.uint8(imagHeader)
-    cv2.imshow(name, img)
+    # cv2.imshow(name, img)
     return img
 
 
