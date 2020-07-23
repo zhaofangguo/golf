@@ -4,7 +4,7 @@
 洞的球心像素坐标
 """
 import cv2
-from getImag import getImag
+# from getImag import getImag
 import numpy as np
 
 robotIP = '169.254.202.17'
@@ -12,10 +12,10 @@ PORT = 9559
 
 
 def ImagProgressSVM(img, flag):
-    if flag == 'hole':
-        svm_l = cv2.ml.SVM_load('svm_l.xml')
+    if flag == 'ball':
+        svm_l = cv2.ml.SVM_load('svm_ball.xml')
     else:
-        pass
+        svm_l = cv2.ml.SVM_load('svm_hole.xml')
     image = img.copy()
     cv2.imshow("image", image)  # 摄像头采集到的原图, 其实可以不显示
     result = np.ones((image.shape[0], image.shape[1]), dtype=np.uint8)
@@ -31,7 +31,8 @@ def ImagProgressSVM(img, flag):
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (9, 9))
     result = cv2.morphologyEx(result, cv2.MORPH_CLOSE, kernel)
     cv2.imshow("result", result)  # mask of interesting area
-    circles = cv2.HoughCircles(result, cv2.HOUGH_GRADIENT, 1, 500, param1=1, param2=10, minRadius=100, maxRadius=500)
+    # cv2.waitKey(0)
+    circles = cv2.HoughCircles(result, cv2.HOUGH_GRADIENT, 1, 60, param1=1, param2=5, minRadius=1, maxRadius=20)
     # 参数4是圆心距离，param2是v2.HOUGH_GRADIENT方法的累加器阈值。阈值越小，检测到的圈子越多。
     print circles
     for circle in circles[0]:
@@ -48,6 +49,6 @@ def ImagProgressSVM(img, flag):
 
 
 if __name__ == '__main__':
-    image = cv2.imread('redballtest.jpg')
-    ImagProgressSVM(image)
+    image = cv2.imread('images/robot7.jpg')
+    ImagProgressSVM(image, 'ball')
     cv2.waitKey(0)

@@ -16,7 +16,7 @@ global targetImage
 targetImage = [[0, 0, 0]]
 
 
-def main(imag):
+def main(imag, ballorhole):
     global image
     image = imag
     cv2.namedWindow("wdname", 0)
@@ -37,7 +37,7 @@ def main(imag):
         # if chr(c) == 'q':
         #
         #     break
-    SVM()
+    SVM(ballorhole)
 
 
 def on_EVENT_LBUTTONDOWN(event, x, y, flags, param):
@@ -62,7 +62,7 @@ def on_EVENT_LBUTTONDOWN(event, x, y, flags, param):
         time.sleep(0.1)
 
 
-def SVM():
+def SVM(ballorhole):
     svm = cv2.ml.SVM_create()
     svm.setType(cv2.ml.SVM_C_SVC)
     svm.setKernel(cv2.ml.SVM_RBF)
@@ -71,10 +71,13 @@ def SVM():
     global targetImage
     targetImage = np.array(targetImage, dtype='float32')
     svm.train(targetImage, cv2.ml.ROW_SAMPLE, label)
-    svm.save("svm_l.xml")
+    if ballorhole == 'ball':
+        svm.save("svm_ball.xml")
+    else:
+        svm.save("svm_hole.xml")
     global image
     cv2.namedWindow("im2", 0)
-    im2 = cv2.imread("redball.jpg")
+    im2 = cv2.imread("images/final.jpg")
     cv2.imshow("im2", im2)
     result = np.ones((im2.shape[0], im2.shape[1]), dtype=np.uint8)
     result[:, :] = 0
@@ -114,6 +117,7 @@ def SVM():
 
 
 if __name__ == "__main__":
-    image = cv2.imread('redball.jpg')
-    main(image)
+    image = cv2.imread('images/final.jpg')
+    main(image, 'ball')
+    # main(image, 'hole')
     cv2.waitKey(0)

@@ -6,6 +6,8 @@ import random
 import cv2
 import math
 import numpy as np
+
+from ImagProgressSVM import ImagProgressSVM
 from naoqi import ALProxy
 import vision_definitions
 import time
@@ -32,7 +34,7 @@ def getImag(IP, PORT, cameraID, name):
     camProxy.releaseImage(nameID)
     imagHeader = np.reshape(imagHeader, [240, 320, 3])
     img = np.uint8(imagHeader)
-    # cv2.imshow(name, img)
+    cv2.imshow(name, img)
     return img
 
 
@@ -43,5 +45,7 @@ if __name__ == "__main__":
     postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
     motionProxy.wakeUp()
     postureProxy.goToPosture("StandInit", 0.5)
-    getImag(robotIP, 9559, 0, 'ajgeljaljif')
+    imag = getImag(robotIP, 9559, 1, 'ajgeljljif')
+    cv2.imwrite('robot7+.jpg', imag)
+    motionProxy.rest()
     cv2.waitKey(0)

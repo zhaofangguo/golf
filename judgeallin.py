@@ -6,6 +6,7 @@
 import time
 
 from ImagProgressHSV import ImagProgressHSV
+from ImagProgressSVM import ImagProgressSVM
 from getImag import getImag
 from naoqi import ALProxy
 from cmath import pi
@@ -15,13 +16,15 @@ import cv2 as cv
 def judgeallin(robotIP, PORT):
     motionProxy = ALProxy("ALMotion", robotIP, PORT)
     img = getImag(robotIP, PORT, 0, 'alkagjhie')
-    flag = (ImagProgressHSV(img, 'hole') is not None) and (ImagProgressHSV(img, 'ball') is not None)
+    # flag = (ImagProgressHSV(img, 'hole') is not None) and (ImagProgressHSV(img, 'ball') is not None)
+    flag = (ImagProgressSVM(img, 'hole') is not None) and (ImagProgressSVM(img, 'ball') is not None)
     if flag:
         return True
     else:
         while not flag:
             motionProxy.moveTo(0, 0, pi / 3)
-            flag = (ImagProgressHSV(img, 'hole') is not None) and (ImagProgressHSV(img, 'ball') is not None)
+            # flag = (ImagProgressHSV(img, 'hole') is not None) and (ImagProgressHSV(img, 'ball') is not None)
+            flag = (ImagProgressSVM(img, 'hole') is not None) and (ImagProgressSVM(img, 'ball') is not None)
             time.sleep(0.5)
         return True
 
@@ -33,4 +36,4 @@ if __name__ == '__main__':
     postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
     motionProxy.wakeUp()
     postureProxy.goToPosture("StandInit", 0.5)
-    judgeallin(robotIP, 9559)
+    print judgeallin(robotIP, 9559)

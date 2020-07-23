@@ -18,11 +18,11 @@ def ImagProgressHSV(filename, flag):
     Image_HSV = cv.cvtColor(Image_Gau, cv.COLOR_BGR2HSV)
     # HSV阈值设定
     if flag == 'ball':
-        lowarray = np.array([0, 43, 46])
-        higharray = np.array([20, 255, 255])
+        lowarray = np.array([140, 43, 46])
+        higharray = np.array([180, 255, 255])
     else:
         lowarray = np.array([0, 43, 46])
-        higharray = np.array([77, 255, 255])
+        higharray = np.array([20, 255, 255])
     # lowarraydark = np.array([0, 43, 46])
     # higharraydark = np.array([10, 255, 255])
     # 　二值化
@@ -36,10 +36,11 @@ def ImagProgressHSV(filename, flag):
     # MedirImagdark = cv.medianBlur(dstdark, 9)
     # element = cv.getStructuringElement(cv.MORPH_RECT, (13, 13))
     # MedirImagdark = cv.morphologyEx(MedirImagdark, cv.MORPH_OPEN, element)
-    # cv.imshow('testdark', MedirImagdark)
+    cv.imshow('testdark', MedirImag)
     # dark = cv.addWeighted(MedirImagdark, 0.5, MedirImag, 0.5, 0)
     # cv.imshow('add', dark)
     # 霍夫变换检测圆心
+    cv.waitKey(0)
     circles = cv.HoughCircles(MedirImag, cv.HOUGH_GRADIENT, 1, 100, param1=1, param2=5, minRadius=1, maxRadius=1000)
     print circles
     if circles is None and flag == 'hole':
@@ -71,8 +72,8 @@ if __name__ == "__main__":
     postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
     motionProxy.wakeUp()
     postureProxy.goToPosture("StandInit", 0.5)
-    frame = getImag('169.254.202.17', 9559, 1, 'ahhhfddvsrdhjgkjgi')
+    frame = getImag('169.254.202.17', 9559, 1, 'ahhhfdvsrdhjgkjgi')
     ImagProgressHSV(frame, 'ball')
-    ImagProgressHSV(frame, 'hole')
+    # ImagProgressHSV(frame, 'hole')
     cv.waitKey(0)
     # print ImagProgress(frame, 1)

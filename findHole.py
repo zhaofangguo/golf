@@ -4,6 +4,8 @@
 """
 
 import cv2 as cv
+
+from ImagProgressSVM import ImagProgressSVM
 from getImag import getImag
 from ImagProgressHSV import ImagProgressHSV
 from turnHeadandGetDistance import turnHeadandGetDistance
@@ -26,9 +28,11 @@ def findHole(robotIP, PORT=9559):
     name = str(random.randint(1, 1000))
     img = getImag(robotIP, PORT, 0, name)
     # 获取球和洞的角度
-    anglelist = getangle(ImagProgressHSV(img, 'hole'), rotation1, rotation2)
+    # anglelist = getangle(ImagProgressHSV(img, 'hole'), rotation1, rotation2)
+    anglelist = getangle(ImagProgressSVM(img, 'hole'), rotation1, rotation2)
     alphahole = float(anglelist[0])
-    anglelist = getangle(ImagProgressHSV(img, 'ball'), rotation1, rotation2)
+    # anglelist = getangle(ImagProgressHSV(img, 'ball'), rotation1, rotation2)
+    anglelist = getangle(ImagProgressSVM(img, 'ball'), rotation1, rotation2)
     alphaball = float(anglelist[0])
     alpha = abs(alphahole - alphaball)
     # 进行左右平移直到处于垂直平分线
