@@ -7,7 +7,7 @@ import cv2
 import math
 import numpy as np
 
-from ImagProgressSVM import ImagProgressSVM
+# from ImagProgressSVM import ImagProgressSVM
 from naoqi import ALProxy
 import vision_definitions
 import time

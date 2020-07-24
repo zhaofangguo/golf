@@ -17,12 +17,12 @@ def ImagProgressHSV(filename, flag):
     Image_Gau = cv.GaussianBlur(Image, (9, 9), 0)
     Image_HSV = cv.cvtColor(Image_Gau, cv.COLOR_BGR2HSV)
     # HSV阈值设定
-    if flag == 'ball':
+    if flag == 'ball': # 默认球为红色
         lowarray = np.array([140, 43, 46])
         higharray = np.array([180, 255, 255])
-    else:
-        lowarray = np.array([0, 43, 46])
-        higharray = np.array([20, 255, 255])
+    else: # 默认洞为蓝色
+        lowarray = np.array([78, 43, 46])
+        higharray = np.array([100, 255, 255])
     # lowarraydark = np.array([0, 43, 46])
     # higharraydark = np.array([10, 255, 255])
     # 　二值化
@@ -72,7 +72,7 @@ if __name__ == "__main__":
     postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
     motionProxy.wakeUp()
     postureProxy.goToPosture("StandInit", 0.5)
-    frame = getImag('169.254.202.17', 9559, 1, 'ahhhfdvsrdhjgkjgi')
+    frame = getImag('169.254.202.17', 9559, 1, 'ahhhdvsrdhjgkjgi')
     ImagProgressHSV(frame, 'ball')
     # ImagProgressHSV(frame, 'hole')
     cv.waitKey(0)

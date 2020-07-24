@@ -4,6 +4,7 @@
 但容易过拟合
 是训练SVM的脚本，生成的xml文件会被别的脚本调用
 应该生成两个xml，一个是球的，一个是洞的
+目前缺少洞的训练数据集！！！！！！！！！！！！！！！
 """
 
 import cv2
@@ -72,12 +73,12 @@ def SVM(ballorhole):
     targetImage = np.array(targetImage, dtype='float32')
     svm.train(targetImage, cv2.ml.ROW_SAMPLE, label)
     if ballorhole == 'ball':
-        svm.save("svm_ball.xml")
+        svm.save("svm_ball_morining.xml")
     else:
         svm.save("svm_hole.xml")
     global image
     cv2.namedWindow("im2", 0)
-    im2 = cv2.imread("images/final.jpg")
+    im2 = cv2.imread("final.jpg")
     cv2.imshow("im2", im2)
     result = np.ones((im2.shape[0], im2.shape[1]), dtype=np.uint8)
     result[:, :] = 0
@@ -117,7 +118,7 @@ def SVM(ballorhole):
 
 
 if __name__ == "__main__":
-    image = cv2.imread('images/final.jpg')
+    image = cv2.imread('final.jpg')
     main(image, 'ball')
     # main(image, 'hole')
     cv2.waitKey(0)

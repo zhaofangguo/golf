@@ -18,14 +18,18 @@ import time
 def main(robotIP, PORT=9559):
     motionProxy = ALProxy("ALMotion", robotIP, PORT)
     postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
+    tts = ALProxy("ALTextToSpeech", robotIP, PORT)
     motionProxy.wakeUp()
     postureProxy.goToPosture("StandInit", 0.5)
     if judgeallin(robotIP, PORT):
         findHole(robotIP, PORT)
+        tts.say('ready to kick')
         distance = turnHeadandGetDistance(robotIP, PORT)
         distance = distance / 10 - 0.1
         motionProxy.moveTo(distance - 0.2, 0, 0)
         kick()
+        tts.say('kick finish')
+    motionProxy.rest()
 
 
 if __name__ == '__main__':

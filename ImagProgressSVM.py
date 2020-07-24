@@ -2,9 +2,11 @@
 """
 使用SVM方式处理图片，加载训练xml文件，返回值为球的球心像素坐标
 洞的球心像素坐标
+会有过拟合的情况，在选点的时候不能选多，或者可以对决策树进行剪枝
 """
 import cv2
-# from getImag import getImag
+from getImag import getImag
+from naoqi import ALProxy
 import numpy as np
 
 robotIP = '169.254.202.17'
@@ -13,7 +15,7 @@ PORT = 9559
 
 def ImagProgressSVM(img, flag):
     if flag == 'ball':
-        svm_l = cv2.ml.SVM_load('svm_ball.xml')
+        svm_l = cv2.ml.SVM_load('svm_ball_morining.xml')
     else:
         svm_l = cv2.ml.SVM_load('svm_hole.xml')
     image = img.copy()
@@ -43,12 +45,32 @@ def ImagProgressSVM(img, flag):
         img = cv2.circle(img, (x, y), 2, (255, 255, 255), -1)
     cv2.imshow('test', img)
     data = [x, y]
+
+    # 此处为获得白色面积的像素数，使用双重遍历方式进行存储，为最终无奈之举，一旦使用，需要替换距离获取函数部分
+    # 和其余所有使用霍夫变换圆心的部分
+    height = result.shape[0]
+    weight = result.shape[1]
+    count = 0
+    countdark = 0
+    for row in range(height):
+        for col in range(weight):
+            pv = result[row, col]
+            # print pv
+            if pv == 255:
+                count += 1
+    print count + countdark
     # contours, hier = cv2.findContours(result, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
     # return result, image, contours
     return data
 
 
 if __name__ == '__main__':
-    image = cv2.imread('images/robot7.jpg')
+    image = cv2.imread('morning4.jpg')
+    # motionProxy = ALProxy("ALMotion", robotIP, PORT)
+    # postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
+    # motionProxy.wakeUp()
+    # postureProxy.goToPosture("StandInit", 0.5)
+    # image = getImag('169.254.202.17', 9559, 1, 'aeogkhscaagihaf')
+    # cv2.imwrite('morninginit2.jpg', image)
     ImagProgressSVM(image, 'ball')
     cv2.waitKey(0)

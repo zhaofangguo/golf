@@ -22,6 +22,7 @@ def findHole(robotIP, PORT=9559):
     # 获取代理
     motionProxy = ALProxy("ALMotion", robotIP, PORT)
     postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
+    tts = ALProxy("ALTextToSpeech", robotIP, PORT)
     # 获取当前头部角度
     rotation1 = motionProxy.getAngles('HeadYaw', True)
     rotation2 = motionProxy.getAngles('HeadPitch', True)
@@ -37,18 +38,23 @@ def findHole(robotIP, PORT=9559):
     alpha = abs(alphahole - alphaball)
     # 进行左右平移直到处于垂直平分线
     if abs(alphaball) > abs(alphahole) and alpha > pi / 180 * 5:
+        tts.say('move to ball')
         motionProxy.moveTo(0, 0.05 * alphaball / abs(alphaball), 0)
         findHole(robotIP, PORT)
     elif abs(alphaball) < abs(alphahole) and alpha > pi / 180 * 5:
+        tts.say('move to hole')
         motionProxy.moveTo(0, 0.05 * alphahole / abs(alphahole), 0)
         findHole(robotIP, PORT)
     else:
+        tts.say('do not need to move')
         alphamiddle = (pi - abs(alphahole) * 2) / 2
         distance = turnHeadandGetDistance(robotIP, PORT)
         distance = distance / 10 - 0.1
         x = distance * math.sin(alphamiddle)
         y = distance * math.cos(alphamiddle) + distance
+        tts.say('move behind ball')
         motionProxy.moveTo(x, y * alphaball / abs(alphaball), 0)
+        tts.say('turn to ball')
         motionProxy.moveTo(0, 0, pi / 2)
         return True
     # data = ImagProgress(img, 'hole')
