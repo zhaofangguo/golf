@@ -52,7 +52,7 @@ def on_EVENT_LBUTTONDOWN(event, x, y, flags, param):
         Point = image[y, x]
         tmp = [Point[0], Point[1], Point[2]]
         global targetImage
-        targetImage = np.vstack((targetImage, tmp))
+        targetImage = np.vstack((targetImage, tmp))  # vstack函数用于拼接数组
         global flag, label
         label = np.vstack((label, [[flag]]))
         if flag == 0:
@@ -60,18 +60,30 @@ def on_EVENT_LBUTTONDOWN(event, x, y, flags, param):
         else:
             cv2.circle(image, (x, y), 1, (0, 0, 0), thickness=-1)
         cv2.imshow("wdname", image)
-        time.sleep(0.1)
+        # time.sleep(0.1)
 
 
+# 1、提取正负样本hog特征
+#
+# 2、投入svm分类器训练，得到model
+#
+# 3、由model生成检测子
+#
+# 4、利用检测子检测负样本，得到hardexample
+#
+# 5、提取hardexample的hog特征并结合第一步中的特征一起投入训练，得到最终检测子。
 def SVM(ballorhole):
     svm = cv2.ml.SVM_create()
-    svm.setType(cv2.ml.SVM_C_SVC)
-    svm.setKernel(cv2.ml.SVM_RBF)
+    svm.setType(cv2.ml.SVM_C_SVC)  # c类支撑向量分类机
+    # 我们在这里选择可用于n级分类的类型C_SVC（n≥2）。这种类型的重要特征是它处理非线性类效果好（即，当训练数据是非线性可分离的时）。
+    # 此功能在这里并不重要，因为数据是线性可分的，我们选择此SVM类型只是最常用的。
+    svm.setKernel(cv2.ml.SVM_RBF)  # 径向积核函数，高斯核函数
     svm.setC(10.0)
     svm.setGamma(0.01)
     global targetImage
     targetImage = np.array(targetImage, dtype='float32')
     svm.train(targetImage, cv2.ml.ROW_SAMPLE, label)
+    # train函数建立SVM模型，第一个参数为训练数据，第二个参数为分类结果，最后一个参数即CvSVMParams
     if ballorhole == 'ball':
         svm.save("svm_ball_morining.xml")
     else:
@@ -118,7 +130,7 @@ def SVM(ballorhole):
 
 
 if __name__ == "__main__":
-    image = cv2.imread('final.jpg')
-    main(image, 'ball')
-    # main(image, 'hole')
+    image = cv2.imread('finalafterhole.jpg')
+    # main(image, 'ball')
+    main(image, 'hole')
     cv2.waitKey(0)

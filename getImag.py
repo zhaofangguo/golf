@@ -39,13 +39,13 @@ def getImag(IP, PORT, cameraID, name):
 
 
 if __name__ == "__main__":
-    robotIP = '169.254.202.17'
+    robotIP = '169.254.48.157'
     PORT = 9559
     motionProxy = ALProxy("ALMotion", robotIP, PORT)
     postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
     motionProxy.wakeUp()
     postureProxy.goToPosture("StandInit", 0.5)
-    imag = getImag(robotIP, 9559, 1, 'ajgeljljif')
-    cv2.imwrite('robot7+.jpg', imag)
+    imag = getImag(robotIP, 9559, 1, 'ajgkhkcjkfyljif')
+    cv2.imwrite('hole_afternoon4.jpg', imag)
     motionProxy.rest()
     cv2.waitKey(0)

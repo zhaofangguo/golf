@@ -3,18 +3,17 @@
 检测球和洞的中心是否在同一条直线上，是则返回TRUE，否则，通过平移，运动直到同一条直线上
 """
 
-import cv2 as cv
 
-from ImagProgressSVM import ImagProgressSVM
-from getImag import getImag
-from ImagProgressHSV import ImagProgressHSV
 from turnHeadandGetDistance import turnHeadandGetDistance
+from ImagProgressSVM import ImagProgressSVM
+from ImagProgressHSV import ImagProgressHSV
 from distance import getangle
+from getImag import getImag
 from naoqi import ALProxy
 from cmath import pi
-import math
+import cv2 as cv
 import random
-
+import math
 
 # 该py为检测洞和球的x是否在一条直线上
 
@@ -29,11 +28,11 @@ def findHole(robotIP, PORT=9559):
     name = str(random.randint(1, 1000))
     img = getImag(robotIP, PORT, 0, name)
     # 获取球和洞的角度
-    # anglelist = getangle(ImagProgressHSV(img, 'hole'), rotation1, rotation2)
-    anglelist = getangle(ImagProgressSVM(img, 'hole'), rotation1, rotation2)
+    anglelist = getangle(ImagProgressHSV(img, 'hole'), rotation1, rotation2)
+    # anglelist = getangle(ImagProgressSVM(img, 'hole'), rotation1, rotation2)
     alphahole = float(anglelist[0])
-    # anglelist = getangle(ImagProgressHSV(img, 'ball'), rotation1, rotation2)
-    anglelist = getangle(ImagProgressSVM(img, 'ball'), rotation1, rotation2)
+    anglelist = getangle(ImagProgressHSV(img, 'ball'), rotation1, rotation2)
+    # anglelist = getangle(ImagProgressSVM(img, 'ball'), rotation1, rotation2)
     alphaball = float(anglelist[0])
     alpha = abs(alphahole - alphaball)
     # 进行左右平移直到处于垂直平分线
@@ -49,7 +48,7 @@ def findHole(robotIP, PORT=9559):
         tts.say('do not need to move')
         alphamiddle = (pi - abs(alphahole) * 2) / 2
         distance = turnHeadandGetDistance(robotIP, PORT)
-        distance = distance / 10 - 0.1
+        distance = distance / 10 - 0.1  # 此处为经验值，需要调整，在先前的测距中，测的距离会比真实距离小10厘米左右
         x = distance * math.sin(alphamiddle)
         y = distance * math.cos(alphamiddle) + distance
         tts.say('move behind ball')
