@@ -1,25 +1,41 @@
-# coding=utf-8
+# -*- encoding: utf-8 -*-
 """
-得到一张图片
-"""
-import random
-import cv2
-import math
-import numpy as np
+@File    :   getImag.py
 
-# from ImagProgressSVM import ImagProgressSVM
-from naoqi import ALProxy
-import vision_definitions
+@Contact :   2055466817@qq.com
+
+@Modify Time :   2020/7/25 下午10:16
+
+@Author :   赵方国
+"""
+
+
+import random
+import math
 import time
 import argparse
+
+import numpy as np
+import cv2
 import motion
 import almath
+from naoqi import ALProxy
+import vision_definitions
 
 IP = '169.254.202.17'
 PORT = 9559
 
 
 def getImag(IP, PORT, cameraID, name):
+    """
+    得到图片一张
+
+    :param IP: 机器人IP
+    :param PORT: 9559
+    :param cameraID: 0为上摄像头，1为下摄像头
+    :param name: 相机名称，一般由随机数生成
+    :return: 图片一张
+    """
     camProxy = ALProxy("ALVideoDevice", IP, PORT)
     resolution = vision_definitions.kQVGA
     colorSpace = vision_definitions.kBGRColorSpace

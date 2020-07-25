@@ -1,7 +1,14 @@
-# -*- encoding: UTF-8 -*-
+# -*- encoding: utf-8 -*-
 """
-从准备状态的NAO摄像头获取不同场景下的图片,并拼接成一张,方便训练和识别
+@File    :   dotheimag.py
+
+@Contact :   2055466817@qq.com
+
+@Modify Time :   2020/7/25 下午10:16
+
+@Author :   赵方国
 """
+
 
 from PIL import Image
 

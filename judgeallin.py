@@ -1,12 +1,18 @@
-# coding=utf-8
+# -*- encoding: utf-8 -*-
 """
-判断是否在视野中同时存在球和洞
-不存在则一直原地转圈，直到同时存在
+@File    :   judgeallin.py
+
+@Contact :   2055466817@qq.com
+
+@Modify Time :   2020/7/25 下午10:16
+
+@Author :   赵方国
 """
+
+
 import time
 
 from ImagProgressHSV import ImagProgressHSV
-from ImagProgressSVM import ImagProgressSVM
 from getImag import getImag
 from naoqi import ALProxy
 from cmath import pi
@@ -14,6 +20,13 @@ import cv2 as cv
 
 
 def judgeallin(robotIP, PORT):
+    """
+    判断是否在视野中同时有球和球洞，没有则一直以60度为周期旋转直到同时出现在视野中
+
+    :param robotIP: 机器人IP
+    :param PORT: 9559
+    :return: TRUE，同时出现在视野中
+    """
     motionProxy = ALProxy("ALMotion", robotIP, PORT)
     tts = ALProxy("ALTextToSpeech", robotIP, PORT)
     img = getImag(robotIP, PORT, 0, 'alkagjhie')

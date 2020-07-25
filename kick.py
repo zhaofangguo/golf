@@ -1,242 +1,144 @@
-# coding=utf-8
+# -*- encoding: utf-8 -*-
 """
-使用拍子打球的动作
+@File    :   kick.py
+
+@Contact :   2055466817@qq.com
+
+@Modify Time :   2020/7/25 下午10:16
+
+@Author :   赵方国
 """
+
+
 from naoqi import ALProxy
 
 
-def kick(robotIP, PORT=9559):
+def kick(IP):
+    """
+    踢球动作
+
+    :param IP: 机器人IP
+    :return: 无返回值
+    """
     # Choregraphe simplified export in Python.
-    from naoqi import ALProxy
+
     names = list()
     times = list()
     keys = list()
 
     names.append("HeadPitch")
-    times.append([2.4, 3.08])
-    keys.append([0.0152981, 0.0152981])
+    times.append([1.76, 4.2, 6.56, 7.6, 8.56, 14.52, 16.28, 18])
+    keys.append([0.0475121, 0.0475121, 0.0475121, 0.0475121, 0.0475121, 0.0475121, 0.0475121, 0.0475121])
 
     names.append("HeadYaw")
-    times.append([2.4, 3.08])
-    keys.append([-0.00464392, -0.00464392])
+    times.append([1.76, 4.2, 6.56, 7.6, 8.56, 14.52, 16.28, 18])
+    keys.append([0.0199001, 0.0199001, 0.0199001, 0.0199001, 0.0199001, 0.0199001, 0.0199001, 0.0199001])
 
     names.append("LAnklePitch")
-    times.append([2.4, 3.08])
-    keys.append([-0.343658, -0.343658])
+    times.append([1.76, 6.56, 7.6, 8.56, 14.52, 18])
+    keys.append([-0.349794, -0.358999, -0.34826, -0.34826, -0.358999, -0.349794])
 
     names.append("LAnkleRoll")
-    times.append([2.4, 3.08])
-    keys.append([-0.00149202, -0.00149202])
+    times.append([1.76, 6.56, 7.6, 8.56, 14.52, 18])
+    keys.append([-0.00149202, -0.00149202, -0.00149202, -0.00149202, -0.00149202, -0.00149202])
 
     names.append("LElbowRoll")
-    times.append([2.4, 3.08])
-    keys.append([-0.974048, -0.974048])
+    times.append([1.76, 6.56, 7.6, 8.56, 9.56, 10.36, 10.56, 12.76, 14.52, 18])
+    keys.append(
+        [-0.997058, -0.967912, -0.967912, -0.153358, -0.164096, -0.164096, -0.164096, -0.164096, -0.967912, -0.997058])
 
     names.append("LElbowYaw")
-    times.append([2.4, 3.08])
-    keys.append([-1.36837, -1.36837])
+    times.append([1.76, 6.56, 7.6, 8.56, 9.56, 10.36, 10.56, 12.76, 14.52, 18])
+    keys.append([-1.37451, -1.34689, -1.34689, -1.34689, -1.3607, -1.3607, -1.3607, -1.3607, -1.34689, -1.37451])
 
     names.append("LHand")
-    times.append([2.4, 3.08])
-    keys.append([0.2616, 0.2616])
+    times.append([1.76, 6.56, 7.6, 8.56, 9.56, 10.36, 10.56, 12.76, 14.52, 18])
+    keys.append([0.0432, 0.0432, 0.0432, 0.0432, 0.0548, 0.0548, 0.0548, 0.0548, 0.0432, 0.0432])
 
     names.append("LHipPitch")
-    times.append([2.4, 3.08])
-    keys.append([-0.454022, -0.454022])
+    times.append([1.76, 6.56, 7.6, 8.56, 14.52, 18])
+    keys.append([-0.44175, -0.44175, -0.44175, -0.44175, -0.44175, -0.44175])
 
     names.append("LHipRoll")
-    times.append([2.4, 3.08])
-    keys.append([0.0061779, 0.0061779])
+    times.append([1.76, 6.56, 7.6, 8.56, 14.52, 18])
+    keys.append([-0.00149202, -0.00149202, -0.00149202, -0.00149202, -0.00149202, -0.00149202])
 
     names.append("LHipYawPitch")
-    times.append([2.4, 3.08])
-    keys.append([-0.00762796, -0.00762796])
+    times.append([1.76, 6.56, 7.6, 8.56, 14.52, 18])
+    keys.append([-0.00149202, -0.00149202, -0.00149202, -0.00149202, -0.00149202, -0.00149202])
 
     names.append("LKneePitch")
-    times.append([2.4, 3.08])
-    keys.append([0.704064, 0.704064])
+    times.append([1.76, 6.56, 7.6, 8.56, 14.52, 18])
+    keys.append([0.699462, 0.699462, 0.699462, 0.699462, 0.699462, 0.699462])
 
     names.append("LShoulderPitch")
-    times.append([2.4, 3.08])
-    keys.append([1.43578, 1.43578])
+    times.append([1.76, 6.56, 7.6, 8.56, 9.56, 10.36, 10.56, 12.76, 14.52, 18])
+    keys.append([1.41737, 1.41584, 1.41584, 1.73338, 1.68736, 1.68736, 1.68736, 1.68736, 1.41584, 1.41737])
 
     names.append("LShoulderRoll")
-    times.append([2.4, 3.08])
-    keys.append([0.263806, 0.263806])
+    times.append([1.76, 6.56, 7.6, 8.56, 9.56, 10.36, 10.56, 12.76, 14.52, 18])
+    keys.append([0.286817, 0.279146, 0.279146, 0.23466, 0.259204, 0.259204, 0.259204, 0.259204, 0.279146, 0.286817])
 
     names.append("LWristYaw")
-    times.append([2.4, 3.08])
-    keys.append([0.0137641, 0.0137641])
+    times.append([1.76, 6.56, 7.6, 8.56, 9.56, 10.36, 10.56, 12.76, 14.52, 18])
+    keys.append(
+        [0.00762796, -0.01845, -0.01845, -0.374338, -0.35593, -0.35593, -0.35593, -0.35593, -0.01845, 0.00762796])
 
     names.append("RAnklePitch")
-    times.append([2.4, 3.08])
-    keys.append([-0.34971, -0.34971])
+    times.append([1.76, 6.56, 7.6, 8.56, 14.52, 18])
+    keys.append([-0.346642, -0.354312, -0.354312, -0.354312, -0.354312, -0.346642])
 
     names.append("RAnkleRoll")
-    times.append([2.4, 3.08])
-    keys.append([4.19617e-05, 4.19617e-05])
+    times.append([1.76, 6.56, 7.6, 8.56, 14.52, 18])
+    keys.append([4.19617e-05, 4.19617e-05, 4.19617e-05, 4.19617e-05, 4.19617e-05, 4.19617e-05])
 
     names.append("RElbowRoll")
-    times.append([2.4, 3.08])
-    keys.append([1.50029, 1.4282])
+    times.append([1.76, 6.56, 7.6, 8.56, 9.56, 10.36, 10.56, 12.76, 14.52, 18])
+    keys.append([0.76244, 1.52484, 1.53711, 1.53711, 1.44047, 1.44047, 1.44047, 1.44047, 1.52484, 0.76244])
 
     names.append("RElbowYaw")
-    times.append([2.4, 3.08])
-    keys.append([0.0168321, 0.0352399])
+    times.append([1.76, 6.56, 7.6, 8.56, 9.56, 10.36, 10.56, 12.76, 14.52, 18])
+    keys.append([1.40203, 1.80855, 1.51708, 1.51708, 0.078192, 0.078192, 0.078192, 0.078192, 1.80855, 1.40203])
 
     names.append("RHand")
-    times.append([2.4, 3.08])
-    keys.append([0.2584, 0.2584])
+    times.append([1.76, 6.56, 7.6, 8.56, 9.56, 10.36, 10.56, 12.76, 14.52, 18])
+    keys.append([0.2524, 0.2524, 0.2524, 0.2524, 0.2496, 0.2496, 0.2496, 0.2496, 0.2524, 0.2524])
 
     names.append("RHipPitch")
-    times.append([2.4, 3.08])
-    keys.append([-0.454106, -0.454106])
+    times.append([1.76, 6.56, 7.6, 8.56, 14.52, 18])
+    keys.append([-0.444902, -0.444902, -0.444902, -0.444902, -0.444902, -0.444902])
 
     names.append("RHipRoll")
-    times.append([2.4, 3.08])
-    keys.append([0.00310993, 0.00310993])
+    times.append([1.76, 6.56, 7.6, 8.56, 14.52, 18])
+    keys.append([-0.00609397, -0.00609397, -0.00609397, -0.00609397, -0.00609397, -0.00609397])
 
     names.append("RHipYawPitch")
-    times.append([2.4, 3.08])
-    keys.append([-0.00762796, -0.00762796])
+    times.append([1.76, 6.56, 7.6, 8.56, 14.52, 18])
+    keys.append([-0.00149202, -0.00149202, -0.00149202, -0.00149202, -0.00149202, -0.00149202])
 
     names.append("RKneePitch")
-    times.append([2.4, 3.08])
-    keys.append([0.696478, 0.696478])
+    times.append([1.76, 6.56, 7.6, 8.56, 14.52, 18])
+    keys.append([0.696477, 0.707216, 0.696477, 0.696477, 0.707216, 0.696477])
 
     names.append("RShoulderPitch")
-    times.append([2.4, 3.08])
-    keys.append([0.722556, 0.759372])
+    times.append([1.76, 6.56, 7.6, 8.56, 9.56, 10.36, 10.56, 12.76, 14.52, 18])
+    keys.append([1.44814, 0.06447, 0.150374, 0.150374, 0.354396, 0.354396, 0.354396, 0.354396, 0.06447, 1.44814])
 
     names.append("RShoulderRoll")
-    times.append([2.4, 3.08])
-    keys.append([-0.124296, -0.0890141])
+    times.append([1.76, 6.56, 7.6, 8.56, 9.56, 10.36, 10.56, 12.76, 14.52, 18])
+    keys.append([-0.582963, -1.23031, 0.056716, 0.056716, 0.205514, 0.205514, 0.205514, 0.205514, -1.23031, -0.582963])
 
     names.append("RWristYaw")
-    times.append([2.4, 3.08])
-    keys.append([0.858998, -1.37144])
+    times.append([1.76, 6.56, 7.6, 8.56, 9.56, 10.36, 10.56, 12.76, 14.52, 18])
+    keys.append([-0.352862, 1.45266, 1.6398, 1.6398, 1.34988, 1.34988, 0.4801, 0.4801, 1.45266, -0.352862])
 
     try:
         # uncomment the following line and modify the IP if you use this script outside Choregraphe.
-        # motion = ALProxy("ALMotion", IP, 9559)
-        motion = ALProxy("ALMotion")
+        motion = ALProxy("ALMotion", IP, 9559)
         motion.angleInterpolation(names, keys, times, True)
     except BaseException, err:
         print err
 
 
-    names.append("HeadPitch")
-    times.append([2.4, 3.08])
-    keys.append([0.0152981, 0.0152981])
-
-    names.append("HeadYaw")
-    times.append([2.4, 3.08])
-    keys.append([-0.00464392, -0.00464392])
-
-    names.append("LAnklePitch")
-    times.append([2.4, 3.08])
-    keys.append([-0.343658, -0.343658])
-
-    names.append("LAnkleRoll")
-    times.append([2.4, 3.08])
-    keys.append([-0.00149202, -0.00149202])
-
-    names.append("LElbowRoll")
-    times.append([2.4, 3.08])
-    keys.append([-0.974048, -0.974048])
-
-    names.append("LElbowYaw")
-    times.append([2.4, 3.08])
-    keys.append([-1.36837, -1.36837])
-
-    names.append("LHand")
-    times.append([2.4, 3.08])
-    keys.append([0.2616, 0.2616])
-
-    names.append("LHipPitch")
-    times.append([2.4, 3.08])
-    keys.append([-0.454022, -0.454022])
-
-    names.append("LHipRoll")
-    times.append([2.4, 3.08])
-    keys.append([0.0061779, 0.0061779])
-
-    names.append("LHipYawPitch")
-    times.append([2.4, 3.08])
-    keys.append([-0.00762796, -0.00762796])
-
-    names.append("LKneePitch")
-    times.append([2.4, 3.08])
-    keys.append([0.704064, 0.704064])
-
-    names.append("LShoulderPitch")
-    times.append([2.4, 3.08])
-    keys.append([1.43578, 1.43578])
-
-    names.append("LShoulderRoll")
-    times.append([2.4, 3.08])
-    keys.append([0.263806, 0.263806])
-
-    names.append("LWristYaw")
-    times.append([2.4, 3.08])
-    keys.append([0.0137641, 0.0137641])
-
-    names.append("RAnklePitch")
-    times.append([2.4, 3.08])
-    keys.append([-0.34971, -0.34971])
-
-    names.append("RAnkleRoll")
-    times.append([2.4, 3.08])
-    keys.append([4.19617e-05, 4.19617e-05])
-
-    names.append("RElbowRoll")
-    times.append([2.4, 3.08])
-    keys.append([1.50029, 1.4282])
-
-    names.append("RElbowYaw")
-    times.append([2.4, 3.08])
-    keys.append([0.0168321, 0.0352399])
-
-    names.append("RHand")
-    times.append([2.4, 3.08])
-    keys.append([0.2584, 0.2584])
-
-    names.append("RHipPitch")
-    times.append([2.4, 3.08])
-    keys.append([-0.454106, -0.454106])
-
-    names.append("RHipRoll")
-    times.append([2.4, 3.08])
-    keys.append([0.00310993, 0.00310993])
-
-    names.append("RHipYawPitch")
-    times.append([2.4, 3.08])
-    keys.append([-0.00762796, -0.00762796])
-
-    names.append("RKneePitch")
-    times.append([2.4, 3.08])
-    keys.append([0.696478, 0.696478])
-
-    names.append("RShoulderPitch")
-    times.append([2.4, 3.08])
-    keys.append([0.722556, 0.759372])
-
-    names.append("RShoulderRoll")
-    times.append([2.4, 3.08])
-    keys.append([-0.124296, -0.0890141])
-
-    names.append("RWristYaw")
-    times.append([2.4, 3.08])
-    keys.append([0.858998, -1.37144])
-
-    try:
-      # uncomment the following line and modify the IP if you use this script outside Choregraphe.
-      # motion = ALProxy("ALMotion", IP, 9559)
-      motion = ALProxy("ALMotion")
-      motion.angleInterpolation(names, keys, times, True)
-    except BaseException, err:
-      print err
-
-
 if __name__ == '__main__':
-    kick('169.254.202.17')
+    kick('169.254.223.247')
