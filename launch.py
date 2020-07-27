@@ -9,7 +9,6 @@
 @Author :   赵方国
 """
 
-from judgeallin import judgeallin
 from kick import kick
 from naoqi import ALProxy
 import cv2 as cv
@@ -19,7 +18,6 @@ from turnHeadandGetDistance import turnHeadandGetDistance
 from walkToBall import walkToBall
 from mircoadjust import mircoadjust
 from areajudgement import areajudgement
-from findHole import findHole
 import random
 from cmath import pi
 import time

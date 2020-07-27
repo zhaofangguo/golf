@@ -50,7 +50,7 @@ def areajudgement(robotIP, PORT):
 
 if __name__ == "__main__":
     robotIP = '169.254.202.17'
-    PORT = 9559                 
+    PORT = 9559
     motionProxy = ALProxy("ALMotion", robotIP, PORT)
     postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
     tts = ALProxy("ALTextToSpeech", robotIP, PORT)

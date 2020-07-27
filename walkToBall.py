@@ -19,7 +19,6 @@ import random
 from ImagProgressHSV import ImagProgressHSV
 from turnHeadandGetDistance import turnHeadandGetDistance
 from turn90andFindtheHole import turn90andFindtheHole
-from judgeallin import judgeallin
 from distance import getangle
 
 
@@ -34,9 +33,9 @@ def walkToBall(robotIP, PORT):
     motionProxy = ALProxy("ALMotion", robotIP, PORT)
     postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
     smallTurnStep = [["StepHeight", 0.01], ["MaxStepX", 0.03]]
-    distance = turnHeadandGetDistance(robotIP, PORT)
+    distance = turnHeadandGetDistance(robotIP, PORT)[2]
     rotationYaw = motionProxy.getAngles('HeadYaw', True)
-    distance = distance / 1000 - 0.4
+    distance = distance / 1000 - 0.4  # TODO 此处距离依靠新测距函数准确度
     rotationYaw = float(str(rotationYaw)[1:10])
     rotationYaw = rotationYaw * almath.TO_RAD
     # motionProxy.moveTo(0, 0, rotationYaw, smallTurnStep)

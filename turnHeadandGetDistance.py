@@ -9,8 +9,8 @@
 @Author :   赵方国
 """
 
-
 from ImagProgressHSV import ImagProgressHSV
+from distance import getdistancefromcam
 from distance import getangle
 from distance import getdistance
 from naoqi import ALProxy
@@ -23,11 +23,11 @@ import motion
 
 def turnHeadandGetDistance(robotIP, PORT=9559):
     """
-    转动头部使目标位于视野中心，然后测定距离
+    为了减少误差，转动头部使目标位于视野中心，然后调用函数求出距离
 
     :param robotIP: 机器人IP
     :param PORT: 9559
-    :return: float类型的距离值
+    :return: 返回distance的数组，为【x直线距离，y直线距离，斜边距离】
     """
     motionProxy = ALProxy("ALMotion", robotIP, PORT)
     postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
@@ -64,16 +64,17 @@ def turnHeadandGetDistance(robotIP, PORT=9559):
     # 得到目前头部角度进行距离测算
     time.sleep(1.0)
     img = getImag(robotIP, PORT, 1, name)
-    cv.imshow('afjklgei', img)
-    theta = motionProxy.getAngles('HeadPitch', True)
-    distance = getdistance(theta)
-    distance = distance.real
+    data = ImagProgressHSV(img, 'ball', 1)
+    distance = getdistancefromcam(robotIP, PORT, data)
+    # theta = motionProxy.getAngles('HeadPitch', True)
+    # distance = getdistance(theta)
+    # distance = distance.real
     # cv.imshow('rs',img)
     print distance
     # time.sleep(4.0)
     # motionProxy.rest()
     # cv.waitKey(0)
-    return float(distance)
+    return distance
 
 
 if __name__ == "__main__":

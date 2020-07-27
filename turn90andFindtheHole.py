@@ -55,7 +55,7 @@ if __name__ == '__main__':
     smallTurnStep = [["StepHeight", 0.01], ["MaxStepX", 0.03]]  # 单步移动
     motionProxy.wakeUp()
     postureProxy.goToPosture("StandInit", 0.5)
-    distance = turnHeadandGetDistance(robotIP, PORT)
+    distance = turnHeadandGetDistance(robotIP, PORT)[2]
     distance = float(distance) - 0.4
     turn90andFindtheHole(robotIP, PORT, distance)
     cv.waitKey(0)

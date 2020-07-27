@@ -15,7 +15,7 @@ import numpy as np
 from naoqi import ALProxy
 
 from getImag import getImag
-from distance import getangle
+from judgecircle import judgecircle
 
 
 def ImagProgressHSV(filename, flag, flag2):
@@ -65,12 +65,21 @@ def ImagProgressHSV(filename, flag, flag2):
         circles = cv.HoughCircles(result, cv.HOUGH_GRADIENT, 1, 60, param1=1, param2=5, minRadius=1, maxRadius=20)
         # 参数4是圆心距离，param2是v2.HOUGH_GRADIENT方法的累加器阈值。阈值越小，检测到的圈子越多。
         # print circles
-        for circle in circles[0]:
-            x = int(circle[0])
-            y = int(circle[1])
-            r = int(circle[2])
-            result = cv.circle(result, (x, y), r, (255, 255, 255), 1)
-            result = cv.circle(result, (x, y), 2, (255, 255, 255), -1)
+        i = 0
+        for ci in circles[0]:
+            i += 1
+        if i != 1:
+            for circle in circles[0]:
+                if judgecircle(Image, circle):
+                    circleflag = circle
+        else:
+            circleflag = circles[0]
+        print circleflag
+        x = int(circleflag[0])
+        y = int(circleflag[1])
+        r = int(circleflag[2])
+        result = cv.circle(result, (x, y), r, (255, 255, 255), 1)
+        result = cv.circle(result, (x, y), 2, (255, 255, 255), -1)
         data = [x, y]
     if flag == 'hole':
         x, y, w, h = cv.boundingRect(result)
@@ -90,12 +99,12 @@ if __name__ == "__main__":
     postureProxy.goToPosture("StandInit", 0.5)
     name = str(random.randint(1, 1000))
     frame = getImag(robotIP, 9559, 1, name)
-    # frame = cv.imread('images/hole_afternoontop.jpg')
-    # print 'hole'
-    # print getangle(ImagProgressHSV(frame, 'hole', 1)[0])
-    print 'ball'
+    # frame = cv.imread('images/morninginit2.jpg')
+    # print 'ball'
+    # ImagProgressHSV(frame, 'ball', 1)
+    # print 'ball'
     print ImagProgressHSV(frame, 'ball', 1)[0]
-    cv.imshow('src', frame)
+    # cv.imshow('src', frame)
     # ImagProgressHSV(frame, 'hole')
     cv.waitKey(0)
     # print ImagProgress(frame, 1)
