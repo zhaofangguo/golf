@@ -9,7 +9,6 @@
 @Author :   赵方国
 """
 
-
 from judgeallin import judgeallin
 from kick import kick
 from naoqi import ALProxy
@@ -17,6 +16,8 @@ import cv2 as cv
 from getImag import getImag
 from ImagProgressHSV import ImagProgressHSV
 from turnHeadandGetDistance import turnHeadandGetDistance
+from walkToBall import walkToBall
+from mircoadjust import mircoadjust
 from areajudgement import areajudgement
 from findHole import findHole
 import random
@@ -37,18 +38,29 @@ def main(robotIP, PORT=9559):
     tts = ALProxy("ALTextToSpeech", robotIP, PORT)
     motionProxy.wakeUp()
     postureProxy.goToPosture("StandInit", 0.5)
-    if judgeallin(robotIP, PORT):
-        findHole(robotIP, PORT)
-        tts.say('ready to kick')
-        distance = turnHeadandGetDistance(robotIP, PORT)
-        name = str(random.randint(1,1000))
-        area = areajudgement(getImag(robotIP, PORT, 1, name))
-        while area < 1000:
-            motionProxy.moveTo(0.05, 0, 0)
-        else:
-            pass
-        kick()
-        tts.say('kick finish')
+    # smallTurnStep = [["StepHeight", 0.01], ["MaxStepX", 0.03]]
+    # if judgeallin(robotIP, PORT):
+    #     findHole(robotIP, PORT)
+    #     tts.say('ready to kick')
+    #     name = str(random.randint(1, 1000))
+    #     area = areajudgement(ImagProgressHSV(getImag(robotIP, PORT, 1, name), 'ball', 1)[1])
+    #     while area < 1000:
+    #         motionProxy.moveTo(0.017, 0, 0, smallTurnStep)
+    #         time.sleep(0.5)
+    #         area = areajudgement(ImagProgressHSV(getImag(robotIP, PORT, 1, name), 'ball', 1)[1])
+    #         tts.say('go go go go')
+    #     while area > 1500:
+    #         motionProxy.moveTo(-0.017, 0, 0, smallTurnStep)
+    #         time.sleep(0.5)
+    #         area = areajudgement(ImagProgressHSV(getImag(robotIP, PORT, 1, name), 'ball', 1)[1])
+    #         tts.say('back back back back')
+    #     tts.say('ready to kick')
+    #     kick()
+    #     tts.say('kick finish')
+    walkToBall(robotIP, PORT)
+    mircoadjust(robotIP, PORT)
+    areajudgement(robotIP, PORT)
+    kick(robotIP, PORT)
     motionProxy.rest()
 
 
