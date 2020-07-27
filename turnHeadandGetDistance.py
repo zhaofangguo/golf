@@ -39,7 +39,13 @@ def turnHeadandGetDistance(robotIP, PORT=9559):
     name = str(name)
     img = getImag(robotIP, PORT, 1, name)
     # 获取旋转所需角度
-    anglelist = getangle(ImagProgressHSV(img, 'ball', 1), rotation1, rotation2)
+    anglelist = getangle(ImagProgressHSV(img, 'ball', 1)[0])
+    rot1 = str(rotation1)
+    rot2 = str(rotation2)
+    rot1 = rot1[1:10]
+    rot2 = rot2[1:10]
+    anglelist[0] = float(anglelist[0]) + float(rot1)
+    anglelist[1] = float(anglelist[1]) + float(rot2)
     alpha = float(anglelist[0])
     beta = float(anglelist[1])
     print alpha, beta
@@ -57,11 +63,10 @@ def turnHeadandGetDistance(robotIP, PORT=9559):
     print 'Pitch finish'
     # 得到目前头部角度进行距离测算
     time.sleep(1.0)
-    # img = getImag(robotIP, PORT, 1, name)
-    # cv.imshow('afjklgei', img)
+    img = getImag(robotIP, PORT, 1, name)
+    cv.imshow('afjklgei', img)
     theta = motionProxy.getAngles('HeadPitch', True)
     distance = getdistance(theta)
-
     distance = distance.real
     # cv.imshow('rs',img)
     print distance
@@ -72,11 +77,12 @@ def turnHeadandGetDistance(robotIP, PORT=9559):
 
 
 if __name__ == "__main__":
-    robotIP = '169.254.223.247'
+    robotIP = '169.254.202.17'
     PORT = 9559
     motionProxy = ALProxy("ALMotion", robotIP, PORT)
     postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
     motionProxy.wakeUp()
     postureProxy.goToPosture("StandInit", 0.5)
-    turnHeadandGetDistance(robotIP='169.254.223.247', PORT=9559)
+    time.sleep(2)
+    turnHeadandGetDistance(robotIP, PORT=9559)
     cv.waitKey(0)

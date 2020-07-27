@@ -9,23 +9,19 @@
 @Author :   赵方国
 """
 
-
 import math
 import random
 from cmath import pi
 
 import cv2 as cv
 from naoqi import ALProxy
+import time
 
 from mircoadjust import mircoadjust
 from turnHeadandGetDistance import turnHeadandGetDistance
 from ImagProgressHSV import ImagProgressHSV
 from distance import getangle
 from getImag import getImag
-
-
-
-
 
 
 # 该py为检测洞和球的x是否在一条直线上
@@ -47,10 +43,13 @@ def findHole(robotIP, PORT=9559):
     rotation2 = motionProxy.getAngles('HeadPitch', True)
     name = str(random.randint(1, 1000))
     img = getImag(robotIP, PORT, 1, name)
+    hole = ImagProgressHSV(img, 'hole', 1)[0]
+    ball = ImagProgressHSV(img, 'ball', 1)[0]
     # 获取球和洞的角度
-    anglelist = getangle(ImagProgressHSV(img, 'hole', 1), rotation1, rotation2)
+    # print hole
+    anglelist = getangle(hole)
     alphahole = float(anglelist[0])
-    anglelist = getangle(ImagProgressHSV(img, 'ball', 1), rotation1, rotation2)
+    anglelist = getangle(ball)
     alphaball = float(anglelist[0])
     alpha = abs(alphahole - alphaball)
     legName = ["LLeg", "RLeg"]
@@ -60,47 +59,65 @@ def findHole(robotIP, PORT=9559):
     footSteps = [[X, Y, Theta]]
     fractionMaxSpeed = [1.0]
     clearExisting = False
-    # 进行左右平移直到处于垂直平分线
-    if abs(alphaball) > abs(alphahole) and alpha > pi / 180 * 5:
-        tts.say('move to ball')
-        # motionProxy.moveTo(0, 0.02 * alphaball / abs(alphaball), 0)
+    smallTurnStep = [["StepHeight", 0.01], ["MaxStepX", 0.03]]  # 单步移动
+    print 'ball'
+    print alphaball
+    print 'hole'
+    print alphahole
+    # motion_proxy.moveTo(0.14, 0, 0, smallTurnStep)
+    # 球和洞在同一半面
+    if (alphaball < 0 and alphahole < 0) or (alphaball > 0 and alphahole > 0):  # TODO 此处需要改进
+        tts.say("move to one direction")
         if alphaball < 0:
-            motionProxy.setFootStepsWithSpeed(legName[0], footSteps, fractionMaxSpeed, clearExisting)
-        else:
-            motionProxy.setFootStepsWithSpeed(legName[1], footSteps, fractionMaxSpeed, clearExisting)
-        findHole(robotIP, PORT)
-    elif abs(alphaball) < abs(alphahole) and alpha > pi / 180 * 5:
-        tts.say('move to hole')
-        # motionProxy.moveTo(0, 0.02 * alphahole / abs(alphahole), 0)
-        if alphahole < 0:
-            motionProxy.setFootStepsWithSpeed(legName[0], footSteps, fractionMaxSpeed, clearExisting)
-        else:
-            motionProxy.setFootStepsWithSpeed(legName[1], footSteps, fractionMaxSpeed, clearExisting)
-
-        findHole(robotIP, PORT)
+            motionProxy.moveTo(0, -0.05, 0, smallTurnStep)
+            return findHole(robotIP, PORT)
+        elif alphaball > 0:
+            motionProxy.moveTo(0, 0.05, 0, smallTurnStep)
+            return findHole(robotIP, PORT)
+    # 机器人位于球和洞之间
     else:
-        tts.say('do not need to move')
-        alphamiddle = (pi - abs(alphahole) * 2) / 2
-        distance = turnHeadandGetDistance(robotIP, PORT)  # 头部已转向物体中心
-        distance = distance / 1000 - 0.2  # 此处为经验值，需要调整，在先前的测距中，测的距离会比真实距离小10厘米左右
-        x = distance * math.sin(alphamiddle)
-        y = distance * math.cos(alphamiddle) + distance
-        tts.say('move behind ball')
-        postureProxy.goToPosture("StandInit", 0.5)
-        # anglelist = getangle(ImagProgressHSV(img, 'ball', 1), rotation1, rotation2)
-        # anglelist = getangle(ImagProgressSVM(img, 'ball'), rotation1, rotation2)
-        # alphaball = float(anglelist[0])
-        motionProxy.moveTo(x, y * alphaball * abs(alphaball), 0)
-        tts.say('turn to ball')
-        motionProxy.moveTo(0, 0, pi / 2)
-        image = getImag(robotIP, PORT, 1, name)
-        ball = ImagProgressHSV(image, 'ball', 1)
-        hole = ImagProgressHSV(image, 'hole', 1)
-        flag = True
-        while flag:
-            flag = mircoadjust(ball, hole, robotIP)
-        tts.say('ready to kick')
-        return True
+        if abs(alphaball) > abs(alphahole) and alpha > pi / 180 * 5:
+            tts.say('move to ball')
+            motionProxy.moveTo(0, 0.05 * alphaball / abs(alphaball), 0, smallTurnStep)
+            # if alphaball < 0:
+            #     motionProxy.setFootStepsWithSpeed(legName[0], footSteps, fractionMaxSpeed, clearExisting)
+            # else:
+            #     motionProxy.setFootStepsWithSpeed(legName[1], footSteps, fractionMaxSpeed, clearExisting)
+            findHole(robotIP, PORT)
+        elif abs(alphaball) < abs(alphahole) and alpha > pi / 180 * 5:
+            tts.say('move to hole')
+            motionProxy.moveTo(0, 0.05 * alphahole / abs(alphahole), 0, smallTurnStep)
+            # if alphahole < 0:
+            #     motionProxy.setFootStepsWithSpeed(legName[0], footSteps, fractionMaxSpeed, clearExisting)
+            # else:
+            #     motionProxy.setFootStepsWithSpeed(legName[1], footSteps, fractionMaxSpeed, clearExisting)
+
+            findHole(robotIP, PORT)
+        else:
+            tts.say('do not need to move')
+            alphamiddle = (pi - abs(alphahole) * 2) / 2
+            distance = turnHeadandGetDistance(robotIP, PORT)  # 头部已转向物体中心
+            distance = distance / 1000 - 0.2  # 此处为经验值，需要调整，在先前的测距中，测的距离会比真实距离小10厘米左右
+            x = distance * math.sin(alphamiddle)
+            y = distance * math.cos(alphamiddle) + distance
+            tts.say('move behind ball')
+            postureProxy.goToPosture("StandInit", 0.5)
+            motionProxy.moveTo(x, y * alphaball * abs(alphaball) + 0.25, 0, smallTurnStep)
+            tts.say('turn to ball')
+            motionProxy.moveTo(0, 0, pi / 2)
+            image = getImag(robotIP, PORT, 1, name)
+            ball = ImagProgressHSV(image, 'ball', 1)[0]
+            hole = ImagProgressHSV(image, 'hole', 1)[0]
+            flag = False
+            while not flag:
+                flag = mircoadjust(ball, hole, robotIP)
+                name = str(random.randint(1, 1000))
+                imag = getImag(robotIP, PORT, 1, name)
+                ball = ImagProgressHSV(imag, 'ball', 1)[0]
+                hole = ImagProgressHSV(imag, 'hole', 1)[0]
+                time.sleep(1)
+            tts.say('ready to kick')
+            return True
     # data = ImagProgress(img, 'hole')
     # if data is None:
     #     return False
@@ -113,7 +130,7 @@ def findHole(robotIP, PORT=9559):
 
 
 if __name__ == "__main__":
-    robotIP = '169.254.223.247'
+    robotIP = '169.254.202.17'
     PORT = 9559
     motionProxy = ALProxy("ALMotion", robotIP, PORT)
     postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)

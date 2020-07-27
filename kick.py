@@ -13,11 +13,12 @@
 from naoqi import ALProxy
 
 
-def kick(IP):
+def kick(IP, PORT):
     """
     踢球动作
 
     :param IP: 机器人IP
+    :param PORT: 9559
     :return: 无返回值
     """
     # Choregraphe simplified export in Python.
@@ -134,11 +135,11 @@ def kick(IP):
 
     try:
         # uncomment the following line and modify the IP if you use this script outside Choregraphe.
-        motion = ALProxy("ALMotion", IP, 9559)
+        motion = ALProxy("ALMotion", IP, PORT)
         motion.angleInterpolation(names, keys, times, True)
     except BaseException, err:
         print err
 
 
 if __name__ == '__main__':
-    kick('169.254.223.247')
+    kick('169.254.202.17')
