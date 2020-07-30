@@ -8,13 +8,19 @@
 
 @Author :   赵方国
 """
-
+import time
 from cmath import pi
 from cmath import tan
+
+import random
+import cv2 as cv
+
+from getImagfromvedio import getImagfromvedio
 from naoqi import ALProxy
 from ImagProgressHSV import ImagProgressHSV
 from getImag import getImag
 import numpy as np
+from numpy.core import pi
 import motion
 
 import almath
@@ -67,8 +73,10 @@ def getdistancefromcam(robotIP, PORT, data):
     cameraX, cameraY, cameraHeight = cameraPos[:3]
     head_yaw, head_pitch = motionProxy.getAngles("Head", True)
     camera_pitch = head_pitch + cameraDirection
-    img_pitch = (data[1] - 120) / 240 * 47.64 / 180 * np.pi
-    img_yaw = (160 - data[0]) / 320 * 60.97 / 180 * np.pi
+    y = float(data[1])
+    x = float(data[0])
+    img_pitch = (y - 120) / 240 * 47.64 / np.pi
+    img_yaw = (160 - x) / 320 * 60.97 / np.pi
     ball_pitch = camera_pitch + img_pitch
     ball_yaw = img_yaw + head_yaw
     print("ball yaw = ", ball_yaw / np.pi * 180)
@@ -76,12 +84,20 @@ def getdistancefromcam(robotIP, PORT, data):
     dis = dis_x
     dis_y = dis_x * np.sin(ball_yaw)
     dis_x = dis_x * np.cos(ball_yaw)
-    distance = [dis_x, dis_y, dis]
+    distance = [abs(dis_x), abs(dis_y), abs(dis)]
     return distance
 
 
 if __name__ == '__main__':
     robotIP = '169.254.202.17'
     PORT = 9559
-    data = ImagProgressHSV(getImag(robotIP, PORT, 1), 'ball', 1)
+    motionProxy = ALProxy("ALMotion", robotIP, PORT)
+    postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
+    tts = ALProxy("ALTextToSpeech", robotIP, PORT)
+    smallTurnStep = [["StepHeight", 0.01], ["MaxStepX", 0.03]]  # 单步移动
+    motionProxy.wakeUp()
+    postureProxy.goToPosture("StandInit", 0.5)
+    time.sleep(1)
+    data = ImagProgressHSV(getImagfromvedio(robotIP, PORT, 1), 'ball', 1)[0][0]
     print getdistancefromcam(robotIP, PORT, data)
+    cv.waitKey(0)

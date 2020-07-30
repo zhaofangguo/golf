@@ -18,6 +18,7 @@ from turnHeadandGetDistance import turnHeadandGetDistance
 from walkToBall import walkToBall
 from mircoadjust import mircoadjust
 from areajudgement import areajudgement
+from seachForBall import searchForBall
 import random
 from cmath import pi
 import time
@@ -55,12 +56,15 @@ def main(robotIP, PORT=9559):
     #     tts.say('ready to kick')
     #     kick()
     #     tts.say('kick finish')
+    searchForBall(robotIP, PORT)
     walkToBall(robotIP, PORT)
     mircoadjust(robotIP, PORT)
     areajudgement(robotIP, PORT)
+    mircoadjust(robotIP, PORT)
     kick(robotIP, PORT)
     motionProxy.rest()
+    cv.waitKey(1)
 
 
 if __name__ == '__main__':
-    main('169.254.202.17', 9559)
+    main('10.0.67.25', 9559)

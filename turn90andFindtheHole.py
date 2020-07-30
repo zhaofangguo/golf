@@ -10,13 +10,14 @@
 """
 
 import cv2 as cv
+
+from getImagfromvedio import getImagfromvedio
 from naoqi import ALProxy
 from getImag import getImag
 from cmath import pi
 import random
 from ImagProgressHSV import ImagProgressHSV
 from turnHeadandGetDistance import turnHeadandGetDistance
-from judgeallin import judgeallin
 from distance import getangle
 
 
@@ -33,16 +34,17 @@ def turn90andFindtheHole(robotIP, PORT, distance):
     postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
     tts = ALProxy("ALTextToSpeech", robotIP, PORT)
     smallTurnStep = [["StepHeight", 0.01], ["MaxStepX", 0.03]]
-    hole = ImagProgressHSV(getImag(robotIP, PORT, 0, str(random.randint(1, 1000))), 'hole', 0)[0]
+    hole = ImagProgressHSV(getImagfromvedio(robotIP, PORT, 0), 'hole', 0)[0][1]
     print hole
     if hole != [0, 0]:
+        tts.say('do not need to move')
         return True
     motionProxy.moveTo(distance, -distance, pi / 2, smallTurnStep)
     tts.say('finish')
-    hole = ImagProgressHSV(getImag(robotIP, PORT, 0, str(random.randint(1, 1000))), 'hole', 0)[0]
+    hole = ImagProgressHSV(getImagfromvedio(robotIP, PORT, 0), 'hole', 0)[0][1]
     while hole == [0, 0]:
         motionProxy.moveTo(distance, -distance, pi / 2, smallTurnStep)
-        hole = ImagProgressHSV(getImag(robotIP, PORT, 0, str(random.randint(1, 1000))), 'hole', 0)[0]
+        hole = ImagProgressHSV(getImagfromvedio(robotIP, PORT, 0), 'hole', 0)[0][1]
     return True
 
 

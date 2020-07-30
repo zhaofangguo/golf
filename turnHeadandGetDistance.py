@@ -10,6 +10,7 @@
 """
 
 from ImagProgressHSV import ImagProgressHSV
+from getImagfromvedio import getImagfromvedio
 from distance import getdistancefromcam
 from distance import getangle
 from distance import getdistance
@@ -31,15 +32,14 @@ def turnHeadandGetDistance(robotIP, PORT=9559):
     """
     motionProxy = ALProxy("ALMotion", robotIP, PORT)
     postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
-    # 获取初始头部角度
+
+    tts = ALProxy("ALTextToSpeech", robotIP, PORT)
     rotation1 = motionProxy.getAngles('HeadYaw', True)
     rotation2 = motionProxy.getAngles('HeadPitch', True)
     print rotation1, rotation2
-    name = random.randint(1, 1000)
-    name = str(name)
-    img = getImag(robotIP, PORT, 1, name)
+    img = getImagfromvedio(robotIP, PORT, 1)
     # 获取旋转所需角度
-    anglelist = getangle(ImagProgressHSV(img, 'ball', 1)[0])
+    anglelist = getangle(ImagProgressHSV(img, 'ball', 1)[0][0])
     rot1 = str(rotation1)
     rot2 = str(rotation2)
     rot1 = rot1[1:10]
@@ -57,14 +57,18 @@ def turnHeadandGetDistance(robotIP, PORT=9559):
     isAbsolute = True
     motionProxy.angleInterpolation(names, angleLists, timeLists, isAbsolute)
     print 'Yaw finish'
+    tts.say('Yaw finish')
     names = "HeadPitch"
+
     angleLists = beta
     motionProxy.angleInterpolation(names, angleLists, timeLists, isAbsolute)
     print 'Pitch finish'
+    tts.say('Pitch finish')
     # 得到目前头部角度进行距离测算
     time.sleep(1.0)
-    img = getImag(robotIP, PORT, 1, name)
-    data = ImagProgressHSV(img, 'ball', 1)
+    img = getImagfromvedio(robotIP, PORT, 1)
+    cv.imshow('img', img)
+    data = ImagProgressHSV(img, 'ball', 1)[0][0]
     distance = getdistancefromcam(robotIP, PORT, data)
     # theta = motionProxy.getAngles('HeadPitch', True)
     # distance = getdistance(theta)
@@ -84,6 +88,5 @@ if __name__ == "__main__":
     postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
     motionProxy.wakeUp()
     postureProxy.goToPosture("StandInit", 0.5)
-    time.sleep(2)
     turnHeadandGetDistance(robotIP, PORT=9559)
     cv.waitKey(0)

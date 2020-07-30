@@ -14,6 +14,7 @@ import random
 import cv2 as cv
 import time
 
+from getImagfromvedio import getImagfromvedio
 from distance import getangle
 from naoqi import ALProxy
 from ImagProgressHSV import ImagProgressHSV
@@ -30,9 +31,10 @@ def mircoadjust(robotIP, PORT):
     """
     motionProxy = ALProxy("ALMotion", robotIP, PORT)
     tts = ALProxy("ALTextToSpeech", robotIP, PORT)
-    imag = getImag(robotIP, PORT, 0, str(random.randint(1, 1000)))
-    ball = ImagProgressHSV(imag, 'ball', 1)
-    hole = ImagProgressHSV(imag, 'hole', 0)
+    data = ImagProgressHSV(getImagfromvedio(robotIP, PORT, 1), 'ball', 1)[0]
+    # imag = getImag(robotIP, PORT, 0, str(random.randint(1, 1000)))
+    ball = data[0]
+    hole = data[1]
     legName = ["LLeg", "RLeg"]
     X = 0
     Y = 0.05
@@ -40,32 +42,37 @@ def mircoadjust(robotIP, PORT):
     footSteps = [[X, Y, Theta]]
     fractionMaxSpeed = [0.5]
     clearExisting = False
-    print abs(ball[0] - hole[0])
-    xdistance = (abs(ball[0] - hole[0]) < 5) and (abs(ball[0] - 160) < 5)
+    print abs(float(ball[0]) - float(hole[0]))
+    xdistance = (abs(float(ball[0]) - float(hole[0])) < 10) and (abs(float(ball[0]) - 160) < 10)
     smallTurnStep = [["StepHeight", 0.01], ["MaxStepX", 0.03]]
     if xdistance:  # 球和洞在中心直线上
-        tts.say('do not need to move')
+        tts.say('micro judge finish')
+        cv.waitKey(1)
         return True
-    if abs(ball[0] - hole[0]) < 5:  # 球和洞在一条直线上，但是不在中心
-        if ball[0] < 160:
+    if abs(float(ball[0]) - float(hole[0])) < 10:  # 球和洞在一条直线上，但是不在中心
+        if float(ball[0]) < 160:
             tts.say('middle middle middle')
             tts.say('walk to left')
             motionProxy.moveTo(0, 0.01, 0, smallTurnStep)
+            cv.waitKey(1)
             return mircoadjust(robotIP, PORT)
-        elif ball[0] >= 160:
+        elif float(ball[0]) >= 160:
             tts.say('middle middle middle')
             tts.say('walk to right')
             motionProxy.moveTo(0, -0.01, 0, smallTurnStep)
+            cv.waitKey(1)
             return mircoadjust(robotIP, PORT)
-    else:  # TODO 此处需要调整，走的方向和预期不符
+    else:
         # 球和洞不在同一条直线上
-        if ball[0] < hole[0]:
+        if float(ball[0]) < float(hole[0]):
             tts.say('walk to left')
             motionProxy.moveTo(0, 0.05, 0, smallTurnStep)
+            cv.waitKey(1)
             return mircoadjust(robotIP, PORT)
-        elif ball[0] > hole[0]:
+        elif float(ball[0]) > float(hole[0]):
             tts.say('walk to right')
             motionProxy.moveTo(0, -0.05, 0, smallTurnStep)
+            cv.waitKey(1)
             return mircoadjust(robotIP, PORT)
 
 
@@ -76,12 +83,5 @@ if __name__ == "__main__":
     postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
     motionProxy.wakeUp()
     postureProxy.goToPosture("StandInit", 0.5)
-    flag = False
-    while not flag:
-        name = str(random.randint(1, 1000))
-        imag = getImag(robotIP, PORT, 1, name)
-        ball = ImagProgressHSV(imag, 'ball', 1)[0]
-        hole = ImagProgressHSV(imag, 'hole', 1)[0]
-        flag = mircoadjust(ball, hole, robotIP)
-        time.sleep(1)
+    mircoadjust(robotIP, PORT)
     cv.waitKey(0)
