@@ -40,7 +40,7 @@ def areajudgement(robotIP, PORT):
         return count
 
 
-def walkuntil():
+def walkuntil(robotIP, PORT):
     count = areajudgement(robotIP, PORT)
     motionProxy = ALProxy("ALMotion", robotIP, PORT)
     postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
@@ -48,12 +48,14 @@ def walkuntil():
     smallTurnStep = [["StepHeight", 0.01], ["MaxStepX", 0.03]]  # 单步移动
     while count < 700:
         motionProxy.moveTo(0.017, 0, 0, smallTurnStep)
-        return walkuntil()
+        cv2.waitKey(1)
+        return walkuntil(robotIP, PORT)
+    tts.say('walk until finish')
     return True
 
 
 if __name__ == "__main__":
-    robotIP = '169.254.202.17'
+    robotIP = '169.254.252.60'
     PORT = 9559
     motionProxy = ALProxy("ALMotion", robotIP, PORT)
     postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
@@ -61,5 +63,6 @@ if __name__ == "__main__":
     smallTurnStep = [["StepHeight", 0.01], ["MaxStepX", 0.03]]  # 单步移动
     motionProxy.wakeUp()
     postureProxy.goToPosture("StandInit", 0.5)
-    walkuntil()
+    walkuntil(robotIP, PORT)
+    cv2.waitKey(1)
     motionProxy.rest()

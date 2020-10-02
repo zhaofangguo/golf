@@ -19,6 +19,7 @@ from turnHeadandGetDistance import turnHeadandGetDistance
 from walkToBall import walkToBall
 from mircoadjust import mircoadjust
 from areajudgement import areajudgement
+from areajudgement import walkuntil
 from seachForBall import searchForBall
 import random
 from cmath import pi
@@ -38,6 +39,7 @@ def main(robotIP, PORT=9559):
     tts = ALProxy("ALTextToSpeech", robotIP, PORT)
     motionProxy.wakeUp()
     postureProxy.goToPosture("StandInit", 0.5)
+    tts.say('I am ready for beginning')
     # smallTurnStep = [["StepHeight", 0.01], ["MaxStepX", 0.03]]
     # if judgeallin(robotIP, PORT):
     #     findHole(robotIP, PORT)
@@ -60,12 +62,14 @@ def main(robotIP, PORT=9559):
     searchForBall(robotIP, PORT)
     walkToBall(robotIP, PORT)
     mircoadjust(robotIP, PORT)
-    areajudgement(robotIP, PORT)
+    walkuntil(robotIP, PORT)
     mircoadjust(robotIP, PORT)
     kick(robotIP, PORT)
+    tts.say('The whole action finished')
+    tts.say('I am ready for resting')
     motionProxy.rest()
     cv.waitKey(1)
 
 
 if __name__ == '__main__':
-    main('10.0.67.25', 9559)
+    main('169.254.252.60', 9559)

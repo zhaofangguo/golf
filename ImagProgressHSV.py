@@ -102,23 +102,27 @@ def ImagProgressHSV(filename, flag, flag2):
             Imag1 = cv.circle(Image, (x, y), r, (0, 255, 0), 1)
             result = cv.circle(Imag1, (x, y), 2, (0, 255, 0), -1)
         databall = [x, y]
-    except SyntaxError:
-        print 'NULLNULLNULLNULLNULLNULLNULL'
+    except TypeError:
+        print 'NULL NULL NULL NULL NULL NULL NULL'
     try:
         x, y, w, h = cv.boundingRect(resulthole)
         cv.rectangle(Image, (x, y), (x + w, y + h), (0, 255, 0), 2)
         result = Image
         datahole = [x + w / 2, y + h]
-    except SyntaxError:
-        print 'NULLNULLNULLNULLNULLNULLNULL'
+    except TypeError:
+        print 'NULL NULL NULL NULL NULL NULL NULL'
     # print data
     cv.imshow('test', result)
-    data = [databall, datahole]
-    return data, MedirImagball
+    try:
+        data = [databall, datahole]
+        return data, MedirImagball
+    except UnboundLocalError:
+        print 'NULL NULL NULL NULL NULL NULL NULL'
+        return 0
 
 
 if __name__ == "__main__":
-    robotIP = '169.254.202.17'
+    robotIP = '169.254.252.60'
     PORT = 9559
     motionProxy = ALProxy("ALMotion", robotIP, PORT)
     postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
@@ -126,5 +130,8 @@ if __name__ == "__main__":
     postureProxy.goToPosture("StandInit", 0.5)
     name = str(random.randint(1, 1000))
     while True:
-        print ImagProgressHSV(getImagfromvedio(robotIP, 9559, 1), 'ball', 1)[0][0]
+        try:
+            print ImagProgressHSV(getImagfromvedio(robotIP, 9559, 1), 'ball', 1)[0][0]
+        except TypeError:
+            print 'wrong'
         cv.waitKey(1)

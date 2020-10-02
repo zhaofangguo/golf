@@ -37,17 +37,21 @@ def walkToBall(robotIP, PORT):
     tts = ALProxy("ALTextToSpeech", robotIP, PORT)
     smallTurnStep = [["StepHeight", 0.01], ["MaxStepX", 0.03]]
     while True:
-        ball = ImagProgressHSV(getImagfromvedio(robotIP, PORT), 'ball', 1)[0]
-        motionProxy.moveTo(0, 0, pi / 6, smallTurnStep)
+        ball = ImagProgressHSV(getImagfromvedio(robotIP, PORT, 1), 'ball', 1)[0][0]
+        motionProxy.moveTo(0, 0, pi / 12, smallTurnStep)
         if 140 < ball[0] < 180:
             break
+        elif 140 < ball[0]:
+            motionProxy.moveTo(0, 0, pi / 12, smallTurnStep)
+        else:
+            motionProxy.moveTo(0, 0, -pi / 12, smallTurnStep)
     y = ball[1]
     # TODO 此处的24个距离值需要具体给定
     distance = [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
                 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05]
     y = y // 10
     flag = -(float(ball[0]) - 160) / abs(float(ball[0]) - 160)
-    motionProxy.moveTo(distance[y], flag * 0.2, 0, smallTurnStep)
+    motionProxy.moveTo(distance[y], 0, 0, smallTurnStep)
     # distance = turnHeadandGetDistance(robotIP, PORT)[2]
     # rotationYaw = motionProxy.getAngles('HeadYaw', True)
     # distance = distance / 100
@@ -68,7 +72,7 @@ def walkToballv2(robotIP, PORT):
     motionProxy = ALProxy("ALMotion", robotIP, PORT)
     tts = ALProxy("ALTextToSpeech", robotIP, PORT)
     smallTurnStep = [["StepHeight", 0.01], ["MaxStepX", 0.03]]  # 单步移动
-    data = ImagProgressHSV(getImagfromvedio(robotIP, PORT, 0), 'ball', 0)[0]
+    data = ImagProgressHSV(getImagfromvedio(robotIP, PORT, 1), 'ball', 1)[0]
     ball = data[0]
     hole = data[1]
     if 140 < ball < 180:
@@ -82,7 +86,7 @@ def walkToballv2(robotIP, PORT):
 
 
 if __name__ == '__main__':
-    robotIP = '169.254.202.17'
+    robotIP = '169.254.252.60'
     PORT = 9559
     motionProxy = ALProxy("ALMotion", robotIP, PORT)
     postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
@@ -92,3 +96,4 @@ if __name__ == '__main__':
     postureProxy.goToPosture("StandInit", 0.5)
     time.sleep(2)
     walkToBall(robotIP, PORT)
+    cv.waitKey(0)

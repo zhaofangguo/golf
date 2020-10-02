@@ -28,19 +28,21 @@ def searchForBall(robotIP, PORT):
     motionProxy = ALProxy("ALMotion", robotIP, PORT)
     postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
     tts = ALProxy("ALTextToSpeech", robotIP, PORT)
+    tts.say('search for ball')
     smallTurnStep = [["StepHeight", 0.01], ["MaxStepX", 0.03]]
     # TODO 此处是否需要改为视频流需要依据实际效果进行调整
-    data = ImagProgressHSV(getImagfromvedio(robotIP, PORT, 1), 'ball', 0)[0][0]
-    if data != [0, 0]:
+    try:
+        data = ImagProgressHSV(getImagfromvedio(robotIP, PORT, 1), 'ball', 0)[0][0]
         tts.say('find the ball')
         return True
-    else:
+    except TypeError:
+        tts.say('can not find the ball')
         motionProxy.moveTo(0, 0, math.pi / 3, smallTurnStep)
         return searchForBall(robotIP, PORT)
 
 
 if __name__ == '__main__':
-    robotIP = '69.254.103.98'
+    robotIP = '169.254.252.60'
     PORT = 9559
     motionProxy = ALProxy("ALMotion", robotIP, PORT)
     postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
