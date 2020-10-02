@@ -43,37 +43,54 @@ def mircoadjust(robotIP, PORT):
     fractionMaxSpeed = [0.5]
     clearExisting = False
     print abs(float(ball[0]) - float(hole[0]))
-    xdistance = (abs(float(ball[0]) - float(hole[0])) < 10) and (abs(float(ball[0]) - 160) < 10)
+    xdistance = (abs(float(ball[0]) - float(hole[0])) < 5) and (abs(float(ball[0]) - 160) < 5)
     smallTurnStep = [["StepHeight", 0.01], ["MaxStepX", 0.03]]
     if xdistance:  # 球和洞在中心直线上
         tts.say('micro judge finish')
         cv.waitKey(1)
         return True
-    if abs(float(ball[0]) - float(hole[0])) < 10:  # 球和洞在一条直线上，但是不在中心
+    if abs(float(ball[0]) - float(hole[0])) > 100:  # 球和洞在一条直线上，但是不在中心
         if float(ball[0]) < 160:
-            tts.say('middle middle middle')
+            tts.say('max value')
             tts.say('walk to left')
-            motionProxy.moveTo(0, 0.01, 0, smallTurnStep)
+            motionProxy.moveTo(0, 0.3, 0, smallTurnStep)
             cv.waitKey(1)
             return mircoadjust(robotIP, PORT)
         elif float(ball[0]) >= 160:
-            tts.say('middle middle middle')
+            tts.say('max value')
             tts.say('walk to right')
-            motionProxy.moveTo(0, -0.01, 0, smallTurnStep)
+            motionProxy.moveTo(0, -0.3, 0, smallTurnStep)
             cv.waitKey(1)
             return mircoadjust(robotIP, PORT)
-    else:
+    elif abs(float(ball[0]) - float(hole[0])) > 50:
         # 球和洞不在同一条直线上
-        if float(ball[0]) < float(hole[0]):
+        if float(ball[0]) < 160:
+            tts.say('second max value')
+            tts.say('walk to left')
+            motionProxy.moveTo(0, 0.1, 0, smallTurnStep)
+            cv.waitKey(1)
+            return mircoadjust(robotIP, PORT)
+        elif float(ball[0]) >= 160:
+            tts.say('second max value')
+            tts.say('walk to right')
+            motionProxy.moveTo(0, -0.1, 0, smallTurnStep)
+            cv.waitKey(1)
+            return mircoadjust(robotIP, PORT)
+    elif abs(float(ball[0]) - float(hole[0])) > 10:
+        if float(ball[0]) < 160:
+            tts.say('min value')
             tts.say('walk to left')
             motionProxy.moveTo(0, 0.05, 0, smallTurnStep)
             cv.waitKey(1)
             return mircoadjust(robotIP, PORT)
-        elif float(ball[0]) > float(hole[0]):
+        elif float(ball[0]) >= 160:
+            tts.say('min value')
             tts.say('walk to right')
             motionProxy.moveTo(0, -0.05, 0, smallTurnStep)
             cv.waitKey(1)
             return mircoadjust(robotIP, PORT)
+    elif abs(float(ball[0]) - float(hole[0])) < 5:
+        return True
 
 
 if __name__ == "__main__":

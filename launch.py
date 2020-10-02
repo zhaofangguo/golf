@@ -8,6 +8,7 @@
 
 @Author :   赵方国
 """
+# TODO 所有动作添加陀螺仪辅助判断
 
 from kick import kick
 from naoqi import ALProxy
