@@ -41,12 +41,13 @@ def areajudgement(robotIP, PORT):
 
 
 def walkuntil(robotIP, PORT):
-    count = areajudgement(robotIP, PORT)
+    y = ImagProgressHSV(getImagfromvedio(robotIP, PORT, 1), 'ball', 1)[0][0][0]
+    print y
     motionProxy = ALProxy("ALMotion", robotIP, PORT)
     postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
     tts = ALProxy("ALTextToSpeech", robotIP, PORT)
     smallTurnStep = [["StepHeight", 0.01], ["MaxStepX", 0.03]]  # 单步移动
-    while count < 700:
+    while y < 180:
         motionProxy.moveTo(0.017, 0, 0, smallTurnStep)
         cv2.waitKey(1)
         return walkuntil(robotIP, PORT)

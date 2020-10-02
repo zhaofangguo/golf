@@ -118,7 +118,7 @@ def ImagProgressHSV(filename, flag, flag2):
         return data, MedirImagball
     except UnboundLocalError:
         print 'NULL NULL NULL NULL NULL NULL NULL'
-        return 0
+        return [[0, 0], [0, 0]], MedirImagball
 
 
 if __name__ == "__main__":
